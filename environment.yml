@@ -1,0 +1,23 @@
+name: flux-positivity
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - scipy
+  - pandas
+  - scikit-learn
+  - xarray
+  - netcdf4
+  - matplotlib
+  - joblib
+  - requests
+  - numcodecs
+  - rasterio
+  - pystac-client
+  - planetary-computer
+  - pytest
+  - ruff
+  - pip
+  - pip:
+      - -e .

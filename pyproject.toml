@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flux-positivity"
+version = "1.0.0"
+description = "Where tower-based carbon-flux upscaling extrapolates: a pre-registered positivity audit of MetaFlux"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Rohan Bali" }]
+keywords = ["eddy covariance", "GPP", "upscaling", "positivity", "transportability",
+            "partial identification", "domain shift", "uncertainty", "MetaFlux", "FLUXNET"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering :: Atmospheric Science",
+  "Intended Audience :: Science/Research",
+]
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "pandas>=2.0",
+  "scikit-learn>=1.3",
+  "xarray>=2023.1",
+  "netCDF4>=1.6",
+  "matplotlib>=3.7",
+  "joblib>=1.3",
+]
+
+[project.optional-dependencies]
+inputs = [            # steps 2-3: stream ERA5 and MODIS LAI
+  "requests>=2.31",
+  "numcodecs>=0.12",
+  "rasterio>=1.3",
+  "pystac-client>=0.7",
+  "planetary-computer>=1.0",
+]
+dev = ["pytest>=7", "ruff>=0.5"]
+
+[project.urls]
+Repository = "https://github.com/rohanbalixz/flux-upscaling-positivity"
+MetaFlux = "https://github.com/leap-stc/metaflux"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["network: needs internet access"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "NPY"]
+ignore = ["E741", "B023"]
+
+[tool.ruff.lint.per-file-ignores]
+"pipeline/*" = ["E402"]
+"pipeline/11_report.py" = ["E501"]   # Markdown template lines

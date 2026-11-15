@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use this code or its results, please cite it as below, and cite MetaFlux (Nathaniel, Liu & Gentine 2023)."
+title: "Where does MetaFlux extrapolate, and does its uncertainty notice? A pre-registered positivity audit of tower-based carbon-flux upscaling"
+type: software
+authors:
+  - family-names: Bali
+    given-names: Rohan
+version: 1.0.0
+date-released: 2026-11-15
+license: MIT
+repository-code: "https://github.com/rohanbalixz/flux-upscaling-positivity"
+keywords:
+  - eddy covariance
+  - gross primary production
+  - upscaling
+  - positivity
+  - transportability
+  - partial identification
+  - uncertainty quantification
+references:
+  - type: article
+    title: "MetaFlux: Meta-learning global carbon fluxes from sparse spatiotemporal observations"
+    authors:
+      - family-names: Nathaniel
+        given-names: Juan
+      - family-names: Liu
+        given-names: Jiangong
+      - family-names: Gentine
+        given-names: Pierre
+    journal: "Scientific Data"
+    volume: 10
+    start: 440
+    year: 2023
+    doi: "10.1038/s41597-023-02349-y"
