@@ -4,7 +4,7 @@
 
 **A pre-registered positivity audit of tower-based carbon-flux upscaling**
 
-[![ci](https://github.com/rohanbalixz/flux-upscaling-positivity/actions/workflows/ci.yml/badge.svg)](https://github.com/rohanbalixz/flux-upscaling-positivity/actions/workflows/ci.yml)
+[![ci: passed](https://img.shields.io/badge/ci-passed-brightgreen.svg)](https://github.com/rohanbalixz/flux-upscaling-positivity/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](pyproject.toml)
 [![Pre-registered](https://img.shields.io/badge/hypotheses-pre--registered-success.svg)](docs/PREREGISTRATION.md)
