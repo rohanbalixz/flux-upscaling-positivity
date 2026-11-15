@@ -1,0 +1,84 @@
+{
+ "k": 10,
+ "greedy_share_recovered": 0.3922818620915084,
+ "random_share_recovered_mean": 0.07682511118933848,
+ "random_share_recovered_range": [
+  0.008084087669136049,
+  0.14501442828178196
+ ],
+ "O2_before": 0.1308156202608593,
+ "O2_after_greedy": 0.07949902515427376,
+ "sites": [
+  {
+   "rank": 1,
+   "lat": 3.25,
+   "lon": 116.25,
+   "koppen": "A",
+   "cum_share_of_outside_gpp_recovered": 0.10853733156287515
+  },
+  {
+   "rank": 2,
+   "lat": 0.25,
+   "lon": 113.5,
+   "koppen": "A",
+   "cum_share_of_outside_gpp_recovered": 0.17540786357920868
+  },
+  {
+   "rank": 3,
+   "lat": -1.25,
+   "lon": 24.5,
+   "koppen": "A",
+   "cum_share_of_outside_gpp_recovered": 0.22330932480955906
+  },
+  {
+   "rank": 4,
+   "lat": 14.5,
+   "lon": 105.25,
+   "koppen": "A",
+   "cum_share_of_outside_gpp_recovered": 0.25853952292177296
+  },
+  {
+   "rank": 5,
+   "lat": -8.5,
+   "lon": -58.25,
+   "koppen": "A",
+   "cum_share_of_outside_gpp_recovered": 0.29217706611320754
+  },
+  {
+   "rank": 6,
+   "lat": 1.75,
+   "lon": 30.5,
+   "koppen": "A",
+   "cum_share_of_outside_gpp_recovered": 0.31944774670233944
+  },
+  {
+   "rank": 7,
+   "lat": 3.25,
+   "lon": -74.0,
+   "koppen": "A",
+   "cum_share_of_outside_gpp_recovered": 0.3394179841255461
+  },
+  {
+   "rank": 8,
+   "lat": -4.5,
+   "lon": 104.25,
+   "koppen": "A",
+   "cum_share_of_outside_gpp_recovered": 0.35853521890510165
+  },
+  {
+   "rank": 9,
+   "lat": 2.5,
+   "lon": 98.25,
+   "koppen": "A",
+   "cum_share_of_outside_gpp_recovered": 0.376372931519518
+  },
+  {
+   "rank": 10,
+   "lat": -21.0,
+   "lon": -52.25,
+   "koppen": "A",
+   "cum_share_of_outside_gpp_recovered": 0.3922818620915084
+  }
+ ],
+ "n_candidates": 6000
+}

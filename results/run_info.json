@@ -1,0 +1,21 @@
+{
+ "flux_positivity": "1.0.0",
+ "generated_utc": "2026-11-15T16:24:50+00:00",
+ "git_commit": null,
+ "python": "3.9.6",
+ "platform": "macOS-27.0.1",
+ "packages": {
+  "numpy": "2.0.2",
+  "scipy": "1.13.1",
+  "pandas": "2.3.3",
+  "scikit-learn": "1.6.1",
+  "xarray": "2024.7.0",
+  "netCDF4": "1.7.2",
+  "matplotlib": "3.9.4",
+  "joblib": "1.5.3",
+  "numcodecs": "0.12.1",
+  "rasterio": "1.4.3",
+  "pystac-client": "0.8.3",
+  "planetary-computer": "1.0.0"
+ }
+}
