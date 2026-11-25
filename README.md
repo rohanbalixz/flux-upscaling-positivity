@@ -24,11 +24,11 @@ This repository measures where the first condition fails, in MetaFlux's own inpu
 
 **1. About 9% of vegetated land-months fall outside the support of the 206 training towers, carrying about 13% of MetaFlux's GPP.**
 - Land-months outside: 9.0% (95% CI 4.9–18.0%). GPP outside: 13.1% (7.0–27.1%).
-- The tropics are the most extrapolated vegetated zone: 17.4% of land-months, 20.7% of GPP.
+- Most of the out-of-support GPP is tropical: 17.4% of tropical land-months and 20.7% of tropical GPP fall outside. Polar/alpine climates have the largest outside share (31% of land-months) but little GPP.
 - Arid (3.1%) and continental (2.2%) climates are well covered.
 - FLUXCOM's richer predictor space showed the opposite tropical pattern (Jung et al. 2020).
 
-**2. 63% of that extrapolation is invisible to a one-variable check.** Every input sits inside the tower range; only the combination is new. The typical case is a wet (8 mm/d), warm (25 °C), humid, bright and leafy tropical month. Climate-invariant ML checks overlap one variable at a time (Beucler et al. 2024); a joint check is the missing step.
+**2. 63% of that extrapolation is invisible to a one-variable check.** Every input sits inside the tower range; only the combination is new. The typical case is a wet (8 mm/d), warm (25 °C), humid, bright and leafy tropical month. Climate-invariant ML (Beucler et al. 2024) matches input distributions one variable at a time; these months suggest checking joint overlap as well.
 
 **3. MetaFlux's ensemble spread does not notice.**
 - GPP_std rises with distance to support (Spearman 0.32), but only because GPP does. Controlling for GPP, the correlation is −0.01.
@@ -39,7 +39,7 @@ This repository measures where the first condition fails, in MetaFlux's own inpu
 
 **5. From the towers alone, global GPP (MetaFlux: 125.8 PgC yr⁻¹) is bounded to ±15% under conditional invariance plus smoothness.**
 - The bound is ±30% with no smoothness at all.
-- Relax invariance by the observed cross-tower error and it becomes about ±84%. The causal assumption, not smoothness, does most of the work.
+- Relax invariance by the observed cross-tower error and it becomes about ±84%. That sets δ to the in-support cross-validated RMSE, which includes measurement noise, so ±84% is an upper envelope.
 - See [What the towers alone can say](#what-the-towers-alone-can-say-about-global-gpp).
 
 **6. Ten well-placed towers would recover 39% of the out-of-support GPP; ten random ones recover 8%.** All ten greedy picks are tropical: Borneo, Sumatra, the Congo basin, Indochina and the Amazon.
@@ -97,7 +97,7 @@ Upscaling is a transport problem: $\theta=\sum_i w_i\,\mathbb E[Y\mid X=x_i,S=0]
 - **A1 (no $S\to Y$):** towers and land share $\mathbb E[Y\mid X]$.
 - **A2:** positivity.
 
-Where A2 fails, the towers identify nothing about those land-months, and a selection diagram cannot help. An $L$-Lipschitz assumption gives sharp McShane–Whitney bounds, whose width grows as $L\,\cdot$ distance to support ([`docs/THEORY.md`](docs/THEORY.md)).
+Where A2 fails, the towers identify nothing about those land-months, and a selection diagram that treats the inputs as a single node cannot help; finer structure over the inputs might. An $L$-Lipschitz assumption gives sharp McShane–Whitney bounds, whose width grows as $L\,\cdot$ distance to support ([`docs/THEORY.md`](docs/THEORY.md)).
 
 | Assumption | median tower slope $L_{50}$ | 90th-percentile slope $L_{90}$ | no smoothness |
 |---|---|---|---|

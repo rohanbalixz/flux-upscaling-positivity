@@ -35,7 +35,7 @@ The LSTM and BiLSTM members see 30-step windows, so support should also be compu
 
 ## 4. The same audit on FLUXCOM-X / X-BASE inputs
 
-Jung et al. (2020) found the humid tropics well represented in FLUXCOM's predictor space; in MetaFlux's five-input space they are the most extrapolated vegetated zone. Running both input spaces through the same pipeline would show which predictors close the tropical gap.
+Jung et al. (2020) found the humid tropics well represented in FLUXCOM's predictor space; in MetaFlux's five-input space they hold most of the out-of-support GPP. Running both input spaces through the same pipeline would show which predictors close the tropical gap.
 
 ## 5. Temporal positivity for DifferLand's space-for-time projection
 

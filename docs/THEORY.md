@@ -48,7 +48,7 @@ $$\theta \in \Big[\sum_{i \notin O} w_i \mu(x_i) + y_{\min}\!\sum_{i\in O} w_i,\
 
 This kind of non-identifiability is different from the one studied in partial transportability (Jalaldoust, Bellot & Bareinboim, NeurIPS 2024). There, positivity is assumed, so the domains share support and every unidentified quantity traces back to mechanisms that may differ between domains (the discrepancy set). Here the mechanism can be shared and the target is still unidentified, because the source never visits the region where part of the target lives.
 
-**Consequence.** Off the support, a selection diagram cannot substitute for a functional-form or smoothness restriction. Any $\mu^*$ that agrees with $\mu$ on the support is compatible with both the diagram and the data.
+**Consequence.** With $X$ treated as a single node, a selection diagram cannot substitute for a functional-form or smoothness restriction off the support: any $\mu^*$ that agrees with $\mu$ on the support is compatible with both the diagram and the data. Finer structure over the components of $X$ may change this. If $Y$ depends on only some components, or its mechanism factors into modules over subsets of the inputs, positivity may be needed only for those subsets. Whether such structure can stand in for smoothness here is open: in 63% of out-of-support land-months every input lies inside the tower range, and only the combination is new.
 
 ## Adding smoothness
 
@@ -106,6 +106,7 @@ The pipeline calibrates $\delta$ by the in-support, spatially blocked cross-vali
 
 - The causal assumption A1 does most of the work, because it makes the in-support mass point-identified.
 - Smoothness governs only the off-support remainder.
+- The ±84% row sets δ to the in-support cross-validated RMSE, which includes measurement noise, so it is an upper envelope, not an estimate.
 - The towers themselves strain A1. Among pairs of anchors from different sites whose inputs are nearly identical ($< \tau/2$ apart), 31% differ by more than 2 gC m⁻² d⁻¹ in GPP. This points to variables outside the five inputs, such as vegetation type, management or footprint.
 
 ## Strict versus practical positivity
