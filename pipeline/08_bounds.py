@@ -3,11 +3,14 @@
 theta = mean annual GPP (PgC/yr) over vegetated MetaFlux cells, 2001-2014
 climatology. In support: point-identified under A1 (MetaFlux value plugged in).
 Outside support: nearest-anchor L-Lipschitz interval, or [0, y_max] with no
-smoothness. Relaxing A1 by delta widens every cell-month by +/- delta.
+smoothness. Relaxing A1 by delta widens every cell-month by +/- delta, with
+two calibrations: the pre-registered in-support CV RMSE (includes month-level
+noise, an upper envelope) and the systematic site-level part (DEVIATIONS D5).
 
 Writes results/bounds.json.
 """
 import numpy as np
+import pandas as pd
 from scipy.optimize import brentq
 from scipy.spatial import cKDTree
 
@@ -69,13 +72,29 @@ def halfwidth_frac(L):
     return (hi - lo) / 2 / theta_mf
 
 
+# DEVIATIONS D5: split the in-support held-out error into a systematic site-level part
+# (a site's mean residual: the kind of discrepancy A1 excludes) and month-to-month
+# scatter (measurement noise + model misfit). delta_site = RMS of site-mean residuals
+# over sites with >= DELTA_SITE_MIN_MONTHS in-support held-out months.
+pred = np.load(config.PROC / "surrogate_preds.npz", allow_pickle=True)
+resid = np.nanmean(pred["csv"], 0) - pred["y"]
+ins = pred["d_train"] <= tau
+rdf = pd.DataFrame({"site": pred["site"][ins], "r": resid[ins]})
+site_mean = rdf.groupby("site").r.agg(["mean", "size"])
+site_mean = site_mean[site_mean["size"] >= config.DELTA_SITE_MIN_MONTHS]
+delta_site = float(np.sqrt((site_mean["mean"] ** 2).mean()))
+within = rdf[rdf.site.isin(site_mean.index)].groupby("site").r.transform(lambda x: x - x.mean())
+
 res = {"theta_metaflux_veg_PgC": theta_mf, "tau": tau, "y_max": y_max, "n_anchors": int(len(ya)),
        "L50": L50, "L90": L90, "n_slope_pairs": int(len(slopes)),
        "near_pairs_n": int(len(near_diff)), "near_pairs_share_disagree_gt2": float((near_diff > 2).mean()),
        "near_pairs_median_absdiff": float(np.median(near_diff)), "delta_inside_RMSE": delta,
+       "delta_site": delta_site, "delta_site_n_sites": int(len(site_mean)),
+       "within_site_residual_sd": float(np.sqrt((within ** 2).mean())),
+       "mean_inside_residual": float(rdf.r.mean()),
        "share_theta_from_outside": float((gpp * W * ~inside).sum() / theta_mf)}
 res["table"] = {}
-for a1, dl in (("A1_exact", 0.0), ("A1_plus_minus_delta", delta)):
+for a1, dl in (("A1_exact", 0.0), ("A1_plus_minus_delta", delta), ("A1_plus_minus_delta_site", delta_site)):
     for name, L in (("L50", L50), ("L90", L90), ("Linf", np.inf)):
         lo, hi = bound(L, dl)
         res["table"][f"{a1}|{name}"] = {"lo": lo, "hi": hi, "halfwidth_pct": 100 * (hi - lo) / 2 / theta_mf}

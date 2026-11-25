@@ -10,6 +10,10 @@
  "near_pairs_share_disagree_gt2": 0.30575035063113604,
  "near_pairs_median_absdiff": 0.9783592749999999,
  "delta_inside_RMSE": 2.642486277840242,
+ "delta_site": 1.3972618840479074,
+ "delta_site_n_sites": 191,
+ "within_site_residual_sd": 2.3190988831746835,
+ "mean_inside_residual": -0.02258769918147395,
  "share_theta_from_outside": 0.13081562039320133,
  "table": {
   "A1_exact|L50": {
@@ -41,6 +45,21 @@
    "lo": 31.66641320985006,
    "hi": 268.83607521540614,
    "halfwidth_pct": 94.26143033926365
+  },
+  "A1_plus_minus_delta_site|L50": {
+   "lo": 74.83280431960517,
+   "hi": 184.43883347665584,
+   "halfwidth_pct": 43.562152911060764
+  },
+  "A1_plus_minus_delta_site|L90": {
+   "lo": 66.74152170961388,
+   "hi": 200.7607603775441,
+   "halfwidth_pct": 53.26501299952229
+  },
+  "A1_plus_minus_delta_site|Linf": {
+   "lo": 64.63568139406424,
+   "hi": 228.98551914929627,
+   "halfwidth_pct": 65.31969836205765
   }
  },
  "L_star_10pct": 5.242024973769255,

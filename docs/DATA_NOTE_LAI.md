@@ -51,7 +51,7 @@ Shortwave and temperature behave as expected, while LAI and EVI peak three month
 
 As shipped, the LAI column contributes almost no information to a MetaFlux-like MLP. Realigned, it is worth about 0.1 in R².
 
-At upscaling time, a model trained on the shifted series would receive correctly phased MODIS LAI. The input the network learned from and the input it is evaluated on would then differ systematically.
+How MetaFlux built its upscaling LAI is not documented in enough detail to check. If the upscaling inputs used correctly phased MODIS LAI, a model trained on the shifted series would see a systematically different LAI at inference than in training.
 
 ## A plausible origin, not verified
 

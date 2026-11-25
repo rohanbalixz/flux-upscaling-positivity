@@ -144,7 +144,7 @@ c = pd.DataFrame(bd["curve"])
 fig, ax = plt.subplots(figsize=(6.4, 3.4))
 ax.plot(c.L, c.halfwidth_pct, color=BLUE)
 ax.set_ylim(0, c.halfwidth_pct.max() * 1.12)
-labs = {"L50": f"median slope\n(rejected: {100*bd['MW_L50_share_infeasible']:.0f}% infeasible)",
+labs = {"L50": f"median slope\n({100*bd['MW_L50_share_infeasible']:.0f}% infeasible)",
         "L90": f"90th-pct slope\n({100*bd['MW_L90_share_infeasible']:.0f}% infeasible)"}
 for key, yfrac in (("L50", 0.80), ("L90", 1.08)):
     ax.axvline(bd[key], color=MUTED, lw=1, ls=(0, (3, 3)))
@@ -154,8 +154,11 @@ ax.text(c.L.max(), 10, "±10% of MetaFlux total  ", color=INK2, ha="right", va="
 ax.scatter([bd["L_star_10pct"]], [10], s=40, color=ORANGE, edgecolors=SURF, linewidths=1.5, zorder=5)
 ax.text(bd["L_star_10pct"] + 0.4, 8.6, f"L* = {bd['L_star_10pct']:.1f}", color=INK, fontsize=8, va="top")
 ax.set_xlabel("Lipschitz constant L (gC m⁻² d⁻¹ per unit input distance)")
-ax.set_ylabel("Half-width of bound on global GPP (%)")
-ax.set_title("Towers + smoothness: how tightly is global GPP pinned?")
+ax.set_ylabel("Half-width of bound on vegetated-land GPP (%)")
+ax.set_title("Towers + smoothness: how tightly is vegetated-land GPP pinned?", pad=26)
+ax.text(0, 1.01, "In-support cell-months take MetaFlux's values (identified under A1);\n"
+        "out-of-support ones are bounded by the nearest tower anchor ± L·distance.", transform=ax.transAxes,
+        color=INK2, fontsize=7.5, va="bottom")
 fig.tight_layout()
 fig.savefig(FIGS / "fig5_bound_vs_L.png")
 plt.close(fig)

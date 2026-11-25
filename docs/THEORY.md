@@ -1,6 +1,6 @@
 # Theory: transport, positivity and partial identification
 
-This note states what the tower data identify about upscaled GPP, what they only bound, and which assumption does the work. Numbers refer to [`results/SUMMARY.md`](../results/SUMMARY.md).
+This note states what the tower data identify about upscaled GPP, what they only bound, and how much each assumption contributes. Numbers refer to [`results/SUMMARY.md`](../results/SUMMARY.md).
 
 ## Setting
 
@@ -38,6 +38,8 @@ graph LR
 
 Upscaling products implicitly assume both A1 and A2. They are logically independent, and only A2 can be checked from inputs alone.
 
+**Estimating the support.** $\operatorname{supp} P(X \mid S=1)$ is not observed directly; it is estimated as the τ-neighbourhood of the tower site-months ([`METHODS.md`](METHODS.md) §3). The set $O$ below is therefore an estimate that depends on τ: 0.9% to 19.5% of land-months fall in $O$ as τ moves from the 99th to the 90th percentile. "Outside support" in the results means outside this neighbourhood.
+
 ## When positivity fails
 
 Let $O = \{i : x_i \notin \operatorname{supp} P(X \mid S=1)\}$, the out-of-support cell-months.
@@ -48,7 +50,7 @@ $$\theta \in \Big[\sum_{i \notin O} w_i \mu(x_i) + y_{\min}\!\sum_{i\in O} w_i,\
 
 This kind of non-identifiability is different from the one studied in partial transportability (Jalaldoust, Bellot & Bareinboim, NeurIPS 2024). There, positivity is assumed, so the domains share support and every unidentified quantity traces back to mechanisms that may differ between domains (the discrepancy set). Here the mechanism can be shared and the target is still unidentified, because the source never visits the region where part of the target lives.
 
-**Consequence.** With $X$ treated as a single node, a selection diagram cannot substitute for a functional-form or smoothness restriction off the support: any $\mu^*$ that agrees with $\mu$ on the support is compatible with both the diagram and the data. Finer structure over the components of $X$ may change this. If $Y$ depends on only some components, or its mechanism factors into modules over subsets of the inputs, positivity may be needed only for those subsets. Whether such structure can stand in for smoothness here is open: in 63% of out-of-support land-months every input lies inside the tower range, and only the combination is new.
+**Consequence.** With $X$ treated as a single node, a selection diagram cannot substitute for a functional-form or smoothness restriction off the support: any $\mu^*$ that agrees with $\mu$ on the support is compatible with both the diagram and the data. Finer structure over the components of $X$ may change this. If $Y$ depends on only some components, or its mechanism factors into modules over subsets of the inputs, positivity may be needed only for those subsets. Whether such structure can stand in for smoothness here is open: in 63% of out-of-support land-months every input lies inside the towers' 1st–99th percentile range, and only the combination is new.
 
 ## Adding smoothness
 
@@ -66,7 +68,9 @@ $$\sup_{f\in\mathcal F_L,\, f(a_k)=y_k} f(x) = U(x) := \min_k \{y_k + L\lVert x-
 
 $$\theta \in \Big[\sum_{i\notin O} w_i\mu(x_i) + \sum_{i\in O} w_i \Lambda(x_i),\; \sum_{i\notin O} w_i\mu(x_i) + \sum_{i\in O} w_i U(x_i)\Big],$$
 
-and no narrower interval is valid for $\mathcal F_L$.
+and no narrower interval is valid for $\mathcal F_L$ *given these anchors*.
+
+**Remark (a tighter anchor set).** Under A1 and A2, $\mu(x_i)$ is identified at every in-support target point. Those points are therefore legitimate anchors too, and they often lie closer to the out-of-support points than the towers do. Adding them would tighten the envelope. The pipeline uses tower anchors only, which keeps the bound valid but conservative, and avoids treating MetaFlux's in-support estimates as exact anchors.
 
 **Nearest-anchor interval (what the pipeline reports).** Let $k^*$ be the anchor nearest $x$ and $d^* = \lVert x - a_{k^*}\rVert$. Then
 
@@ -80,38 +84,53 @@ linear in $L$, with slope equal to the weighted distance of the out-of-support m
 
 ## What the data say about L
 
-$L$ is not identified. The towers constrain it from one side only: an $L$ is rejected if nearby anchors cannot be interpolated by any $L$-Lipschitz function. In that case $\Lambda(x) > U(x)$, which the pipeline reports as the *infeasible share*. The pipeline reports four quantities:
+$L$ is not identified. The towers constrain it from one side only: an $L$ is inconsistent with the data if nearby anchors cannot be interpolated by any $L$-Lipschitz function. In that case $\Lambda(x) > U(x)$, which the pipeline reports as the *infeasible share*.
+
+The anchors are site × month means, so they carry measurement noise and any between-site discrepancy at fixed inputs (A1 violations). Infeasibility therefore reflects noise as well as genuinely steep variation, and an infeasible $L$ is not proof that $\mu$ is steeper than $L$.
+
+The pipeline reports four quantities:
 
 - $L_{50}$ and $L_{90}$: quantiles of the slopes $|y_j - y_k| / \lVert a_j - a_k\rVert$ between anchors from different sites (more than 55 km apart) at distances in $[\tau/2, 2\tau]$;
-- the McShane–Whitney infeasible share at each of those values: the data reject $L_{50}$ (88% infeasible) but not $L_{90}$ (5%);
+- the McShane–Whitney infeasible share at each of those values: the anchors are inconsistent with $L_{50}$ near 88% of out-of-support points, and with $L_{90}$ near 5%;
 - the **breakdown value** $L^* = \sup\{L : \text{half-width}(\theta) \le 10\%\}$, here $2.2\times L_{50}$.
 
 Reporting breakdown values rather than a single $L$ follows sensitivity analysis in the Rosenbaum and Manski tradition. A reader who believes a particular $L$ can read off the bound it implies.
 
 ## Relaxing A1
 
-Suppose $|\mu^*(x) - \mu(x)| \le \delta$ for all $x$. Then every term of $\theta$, inside the support included, widens by $\pm\delta$.
+Suppose $|\mu^*(x) - \mu(x)| \le \delta$ for all $x$. Then every term of $\theta$, inside the support included, widens by $\pm\delta$. The widening is sharp for this class: $\mu^* = \mu + \delta$ everywhere is admissible. It is a worst case, though, because it shifts every land-month in the same direction.
 
-The pipeline calibrates $\delta$ by the in-support, spatially blocked cross-validated RMSE of a surrogate model. That is the empirical scale of how much towers with the same inputs differ.
+What moves $\theta$ is the weighted *average* discrepancy $\sum_i w_i\,(\mu^*(x_i)-\mu(x_i))$. Discrepancies of mixed sign partly cancel.
+
+**Calibrating δ.** The data do not identify δ. The pipeline uses the in-support, spatially blocked cross-validated errors of a surrogate model in two ways:
+
+| Calibration | δ (gC m⁻² d⁻¹) | What it contains |
+|---|---|---|
+| In-support CV RMSE (pre-registered) | 2.64 | Systematic site-level discrepancy, plus month-to-month measurement noise and model misfit. An upper envelope. |
+| Systematic site-level part (D5) | 1.40 | RMS over 191 sites of each site's mean residual, the kind of discrepancy A1 excludes. Month-to-month scatter (2.32) is removed, but surrogate model error remains, so this is still conservative. |
+
+Across towers, the site-level discrepancies average to −0.02 gC m⁻² d⁻¹. Among the towers, then, they cancel. If land were exchangeable with towers given $X$, the average discrepancy over land would be small too. That exchangeability is itself an assumption the data cannot check.
 
 ## What each assumption buys (MetaFlux)
 
-| Assumption on $\mu^*$ | In support (87% of GPP mass) | Off support (13%) | Bound on global GPP |
+Bounds on vegetated-land GPP, with in-support values taken from MetaFlux and out-of-support values from the nearest-anchor interval:
+
+| Assumption on $\mu^*$ | In support (87% of GPP mass) | Off support (13%) | Bound on vegetated-land GPP |
 |---|---|---|---|
 | A1 + $\mathcal F_{L_{90}}$ | identified | $\pm L d^*$ | ±15% |
 | A1, no smoothness | identified | $[0, y_{\max}]$ | ±30% |
-| A1 relaxed by δ + $\mathcal F_{L_{90}}$ | $\pm\delta$ | $\pm(L d^* + \delta)$ | ±84% |
+| A1 relaxed by δ = 1.40 (systematic) + $\mathcal F_{L_{90}}$ | $\pm\delta$ | $\pm(L d^* + \delta)$ | ±53% |
+| A1 relaxed by δ = 2.64 (upper envelope) + $\mathcal F_{L_{90}}$ | $\pm\delta$ | $\pm(L d^* + \delta)$ | ±84% |
 
 **Reading the table.**
 
-- The causal assumption A1 does most of the work, because it makes the in-support mass point-identified.
-- Smoothness governs only the off-support remainder.
-- The ±84% row sets δ to the in-support cross-validated RMSE, which includes measurement noise, so it is an upper envelope, not an estimate.
-- The towers themselves strain A1. Among pairs of anchors from different sites whose inputs are nearly identical ($< \tau/2$ apart), 31% differ by more than 2 gC m⁻² d⁻¹ in GPP. This points to variables outside the five inputs, such as vegetation type, management or footprint.
+- **Holding A1 identifies most of θ.** It makes the in-support mass, 87% of GPP, point-identified. Smoothness governs only the off-support 13%: dropping it entirely widens the bound from ±15% to ±30%.
+- **Relaxing A1 can cost more than dropping smoothness.** A same-sign shift of the systematic site-level discrepancy widens the bound to ±53%, already beyond the no-smoothness ±30%. Whether that worst case is realistic depends on whether discrepancies cancel over land. Among towers they average to about zero.
+- **The towers themselves strain A1.** Among pairs of anchors from different sites whose inputs are nearly identical ($< \tau/2$ apart), 31% differ by more than 2 gC m⁻² d⁻¹ in GPP. This points to variables outside the five inputs, such as vegetation type, management or footprint.
 
 ## Strict versus practical positivity
 
-Strict support fails for 9% of land-months. However, a classifier separates towers from land with AUC 0.91, so the density ratio $p^*(x)/p(x)$ is extreme even inside the support.
+The τ-based support check flags 9% of land-months. However, a classifier separates towers from land with AUC 0.91, so the density ratio $p^*(x)/p(x)$ is extreme even inside the estimated support.
 
 - **For estimation**, practical overlap is the binding constraint: importance-weighted transport estimators would have very large variance.
 - **In theory terms**, this is the regime studied in covariate-shift theory through transfer exponents (Kpotufe & Martinet 2021, *Ann. Statist.*), where the target puts mass in regions of low source density.

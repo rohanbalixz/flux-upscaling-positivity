@@ -47,12 +47,12 @@ A cell counts as vegetated if MetaFlux has values there, barren + snow + water m
 
 ### Input validation at tower cells (matched site-year-month, 2001–2014)
 
-| Variable | r | Relative bias |
+| Variable | r | Mean bias (gridded − training) |
 |---|---|---|
-| Air temperature | 0.99 | +3% |
-| VPD | 0.97 | −3% |
-| Incoming shortwave | 0.97 | +6% |
-| Precipitation | 0.73 | +13% |
+| Air temperature | 0.99 | +0.3 °C |
+| VPD | 0.97 | −0.14 hPa (−3%) |
+| Incoming shortwave | 0.97 | +9.9 W m⁻² (+6%) |
+| Precipitation | 0.73 | +0.28 mm d⁻¹ (+13%) |
 
 Precipitation is the weakest link, so `log(1+P)` is a pre-registered robustness variant.
 
@@ -67,7 +67,7 @@ Precipitation is the weakest link, so `log(1+P)` is a pre-registered robustness 
   - The share of MetaFlux GPP mass outside support.
   - Both, broken down by Köppen group.
   - The share of outside points that sit inside the tower 1st–99th percentile range on *every* input. This is the joint-versus-marginal check, the multivariate counterpart of the per-variable Hellinger overlap check in Beucler et al. (2024).
-- **Uncertainty.** A site bootstrap with 200 replicates, which resamples sites and recomputes τ and every share.
+- **Uncertainty.** A site bootstrap with 200 replicates, which resamples sites and recomputes τ and every share. The z-score normalisation is held at the full-sample tower statistics, so the intervals reflect which towers are in the sample, not uncertainty in the scaling.
 - **Robustness.**
   - τ at the 90th and 99th percentiles.
   - log(1+P); a rank transform; Mahalanobis distance.
@@ -102,12 +102,15 @@ See [`THEORY.md`](THEORY.md).
 
 - **Anchors.** Tower site × calendar-month means, 2,448 in all.
 - **Bounds outside support.** Nearest-anchor $L$-Lipschitz intervals clipped to $[0, y_{max}]$, where $y_{max}$ is the largest tower monthly GPP.
-- **In support.** MetaFlux values are used, which is identification under A1.
+- **In support.** Under A1 these cell-months are identified; MetaFlux's values are plugged in as the estimate, and their estimation error is not propagated.
+- **Relaxing A1.** δ is calibrated two ways from the surrogate's in-support held-out residuals:
+  - the cross-validated RMSE, 2.64 (pre-registered). It includes month-to-month noise, so it is an upper envelope.
+  - the systematic site-level part, 1.40 (D5). This is the RMS of each site's mean residual, over the 191 sites with at least 12 in-support held-out months.
 - **Reported.**
   - $L_{50}$ and $L_{90}$ from cross-site anchor slopes;
   - the McShane–Whitney infeasible share at each;
   - the breakdown value $L^*$;
-  - the 2 × 3 table of {A1 exact, A1 ± δ} × {$L_{50}$, $L_{90}$, no smoothness}.
+  - the table of {A1 exact, A1 ± δ for each calibration} × {$L_{50}$, $L_{90}$, no smoothness}.
 
 ## 7. Network design
 
@@ -122,4 +125,5 @@ See [`THEORY.md`](THEORY.md).
 2. **Different reanalysis versions.** Tower inputs are FLUXNET2015's ERA-Interim-based `_ERA` columns, while target inputs are ERA5. The validation table above bounds the size of this mismatch.
 3. **The surrogate is not MetaFlux.** It tests the input space and the sites, not MetaFlux's weights.
 4. **Only part of the result is bounded.** The bounds address the out-of-support part only; inside the support they take MetaFlux's values as given.
-5. **LAI coverage.** The LAI climatology uses two years. LAI interannual variability is small next to the seasonal cycle, which is the signal that matters here.
+5. **Support is estimated.** The τ-neighbourhood stands in for the true support, so every share depends on τ (0.9–19.5% across the 99th–90th percentile choices).
+6. **LAI coverage.** The LAI climatology uses two years. LAI interannual variability is small next to the seasonal cycle, which is the signal that matters here.

@@ -10,8 +10,11 @@ from flux_positivity.io import load_json, save_json
 
 sup, h4 = load_json("support_results.json"), load_json("H4_product_uncertainty.json")
 sg, bd, nd = load_json("H2_H3_surrogate.json"), load_json("bounds.json"), load_json("network_design.json")
-iv = load_json("inputs_validation.json")
+iv, drv = load_json("inputs_validation.json"), load_json("outside_support_drivers.json")
 p, b, c = sup["primary"], sup["bootstrap"], sg["csv"]
+reg = bd["regional_L50"]
+out_pg = {g: v["theta_mf"] * v["share_outside_gpp"] for g, v in reg.items()}   # PgC/yr outside, by group
+out_tot = sum(out_pg.values())
 
 
 def pct(x, k=1):
@@ -38,7 +41,9 @@ rows = [
      "met" if p["P1c_share_outside_but_inside_all_marginals"] >= 0.25 else "not met"),
     ("P2", "Held-out RMSE outside / inside ≥ 1.5 (falsifier < 1.1)",
      f"{c['P2_ratio_out_in']:.2f} ({ci_raw(cb['P2_ratio_out_in'])}); GBM {sg['gbm']['P2_ratio_out_in']:.2f}",
-     "met" if c["P2_ratio_out_in"] >= 1.5 else ("falsified" if c["P2_ratio_out_in"] < 1.1 else "not met, not falsified")),
+     "met" if c["P2_ratio_out_in"] >= 1.5 else ("falsified" if c["P2_ratio_out_in"] < 1.1 else
+                                                 "not met, not falsified" + (" (interval spans 1.1)"
+                                                                             if cb["P2_ratio_out_in"][0] < 1.1 else ""))),
     ("P2b", "Site partial Spearman(distance, RMSE | GPP) > 0",
      f"{c['P2b_site_partial_spearman_d_rmse_given_gpp']:.2f}",
      "met" if c["P2b_site_partial_spearman_d_rmse_given_gpp"] > 0 else "not met"),
@@ -93,8 +98,13 @@ Intervals: site bootstrap (H1), cluster bootstrap over held-out towers (H2–H3)
 
 - Tower site-months: {p['n_tower_site_months']} from {p['n_sites']} sites; vegetated cells: {p['n_veg_cells']}; τ = {p['tau']:.3f}.
 - Outside support: {pct(p['O1_area'])} of land-months ({ci(b['O1_area'])}), {pct(p['O2_gpp'])} of MetaFlux GPP ({ci(b['O2_gpp'])}).
-- By Köppen group (area / GPP): """ + "; ".join(
-    f"{g} {pct(p['O1_' + g])} / {pct(p['O2_' + g])}" for g in "ABCDE") + f"""
+- By Köppen group, share of the group's land-months / of the group's GPP outside support: """ + "; ".join(
+    f"{g} {pct(p['O1_' + g])} / {pct(p['O2_' + g])}" for g in "ABCDE") + """
+- Where the out-of-support GPP sits (PgC yr⁻¹, share of all out-of-support GPP): """ + "; ".join(
+    f"{g} {out_pg[g]:.2f} ({pct(out_pg[g] / out_tot, 0)})" for g in "ABCDE") + f"""; total {out_tot:.2f}.
+- Median inputs of out-of-support tropical (A) land-months: """ + ", ".join(
+    f"{k} {v:.1f}" for k, v in drv["A"]["median_raw_inputs_outside"].items()) + """ (tower 1st–99th percentile: """ + ", ".join(
+    f"{k} {drv['tower_p1'][k]:.1f}–{drv['tower_p99'][k]:.1f}" for k in drv["tower_p1"]) + f""").
 - Robustness (area): τ90 {pct(sup['robustness']['tau_q90']['O1_area'])}, τ99 {pct(sup['robustness']['tau_q99']['O1_area'])}, log(1+P) {pct(sup['robustness']['logp']['O1_area'])}, Mahalanobis {pct(sup['robustness']['maha']['O1_area'])}, rank {pct(sup['robustness']['rank']['O1_area'])}, LAI realigned {pct(sup['robustness']['S-LAI_realigned']['O1_area'])}.
 - Domain classifier towers vs pixels: AUC {sup['domain_classifier']['auc_towers_vs_pixels']:.2f}.
 
@@ -123,7 +133,10 @@ Near-identical inputs at different towers differing by > 2 gC m⁻² d⁻¹: {pc
 | | L50 | L90 | no smoothness |
 |---|---|---|---|
 | A1 exact | {bt['A1_exact|L50']['lo']:.1f}–{bt['A1_exact|L50']['hi']:.1f} (±{bt['A1_exact|L50']['halfwidth_pct']:.1f}%) | {bt['A1_exact|L90']['lo']:.1f}–{bt['A1_exact|L90']['hi']:.1f} (±{bt['A1_exact|L90']['halfwidth_pct']:.1f}%) | {bt['A1_exact|Linf']['lo']:.1f}–{bt['A1_exact|Linf']['hi']:.1f} (±{bt['A1_exact|Linf']['halfwidth_pct']:.1f}%) |
-| A1 ± δ (δ = {bd['delta_inside_RMSE']:.2f}) | ±{bt['A1_plus_minus_delta|L50']['halfwidth_pct']:.0f}% | ±{bt['A1_plus_minus_delta|L90']['halfwidth_pct']:.0f}% | ±{bt['A1_plus_minus_delta|Linf']['halfwidth_pct']:.0f}% |
+| A1 ± δ, δ = in-support CV RMSE {bd['delta_inside_RMSE']:.2f} (pre-registered; upper envelope) | ±{bt['A1_plus_minus_delta|L50']['halfwidth_pct']:.0f}% | ±{bt['A1_plus_minus_delta|L90']['halfwidth_pct']:.0f}% | ±{bt['A1_plus_minus_delta|Linf']['halfwidth_pct']:.0f}% |
+| A1 ± δ, δ = systematic site-level part {bd['delta_site']:.2f} (D5) | ±{bt['A1_plus_minus_delta_site|L50']['halfwidth_pct']:.0f}% | ±{bt['A1_plus_minus_delta_site|L90']['halfwidth_pct']:.0f}% | ±{bt['A1_plus_minus_delta_site|Linf']['halfwidth_pct']:.0f}% |
+
+In-support held-out error decomposition (D5): systematic site-level RMS {bd['delta_site']:.2f} over {bd['delta_site_n_sites']} sites; within-site scatter {bd['within_site_residual_sd']:.2f}; mean residual across towers {bd['mean_inside_residual']:+.3f} gC m⁻² d⁻¹.
 
 ## Network design
 

@@ -45,3 +45,29 @@ Point estimates, thresholds and the verdicts in the outcome table are unchanged.
 ## D4. Editorial edit to the pre-registration (15 Nov 2026, after the analysis)
 
 Two references to material outside this repository were removed from `PREREGISTRATION.md`: one sentence in §0 and the qualifier of the P4 label in §4. No hypothesis, prediction, threshold, falsifier or analysis choice changed. The file was re-hashed; `PREREGISTRATION.sha256` keeps the original hash and the time it was recorded.
+
+## D5. A second calibration of δ, and precision fixes (24 Nov 2026, reporting only)
+
+**Why.** The pre-registered δ, the in-support cross-validated RMSE of 2.64 gC m⁻² d⁻¹, mixes systematic site-level discrepancy with month-to-month measurement noise and model misfit. Only the systematic part corresponds to a violation of conditional invariance (A1).
+
+**Added.**
+
+- The held-out in-support residuals are split into a site-level part and within-site scatter:
+  - δ_site = 1.40, the RMS over 191 sites (each with at least 12 in-support held-out months) of each site's mean residual;
+  - within-site scatter = 2.32;
+  - mean residual across towers = −0.02.
+- The bounds are reported for δ_site as an extra row (±44%, ±53% and ±65% at L50, L90 and no smoothness), computed from the saved surrogate predictions in `pipeline/08_bounds.py`.
+- The pre-registered δ row is unchanged and still reported.
+
+**Precision fixes made at the same time.**
+
+- **Vegetated-land GPP.** The bounded quantity is vegetated-land GPP within MetaFlux's mask, with in-support values taken from MetaFlux, not "global GPP from the towers alone".
+- **Nearest-anchor interval.** The reported bound is this interval, not the sharp McShane–Whitney envelope.
+- **Infeasibility.** An infeasible L is described as inconsistent with noisy anchors, not "rejected".
+- **Support threshold.** "Outside support" is defined by the threshold τ.
+- **Marginal ranges.** Ranges are the towers' 1st–99th percentiles.
+- **Counts.** The count (67 cell-months) is given for the above-tower-maximum result.
+- **P2 interval.** P2's interval spans its falsifier threshold.
+- **Temperature bias.** Temperature bias is given in °C.
+
+Only figure 5's labels changed; no other figure or result number changed.

@@ -53,6 +53,7 @@ LAI_REALIGN_MONTHS = 3             # DEVIATIONS.md D1
 # ---- identification layer [s5] -----------------------------------------------------
 SLOPE_DISTANCE_RANGE = (0.5, 2.0)  # x tau, pairs used for empirical Lipschitz slopes
 BREAKDOWN_HALFWIDTH = 0.10         # L* = largest L with half-width <= 10% of theta
+DELTA_SITE_MIN_MONTHS = 12         # DEVIATIONS D5: sites need >= 12 in-support held-out months
 
 # ---- network design [s6] -------------------------------------------------------------
 NETWORK_K = 10

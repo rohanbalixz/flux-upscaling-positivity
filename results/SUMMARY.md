@@ -9,7 +9,7 @@
 | P1a | ≥ 10% of vegetated land-months outside support | 9.0% (4.9–18.0%) | not met |
 | P1b | Arid > tropical | A 17.4% vs B 3.1%; B > A in 0% of bootstraps | falsified |
 | P1c | ≥ 25% of outside points inside every marginal range | 63% (46–71%) | met |
-| P2 | Held-out RMSE outside / inside ≥ 1.5 (falsifier < 1.1) | 1.18 (0.98–1.38); GBM 1.21 | not met, not falsified |
+| P2 | Held-out RMSE outside / inside ≥ 1.5 (falsifier < 1.1) | 1.18 (0.98–1.38); GBM 1.21 | not met, not falsified (interval spans 1.1) |
 | P2b | Site partial Spearman(distance, RMSE \| GPP) > 0 | 0.09 | met |
 | P3a | Spearman(seed spread, \|error\|) < 0.3 | 0.41 (0.37–0.44) | not met |
 | P3b | RMSE / RMS spread > 2, larger outside support | 8.6 (7.6–9.7); inside 9.2 vs outside 5.2 | first part met; second not met |
@@ -26,7 +26,9 @@ Intervals: site bootstrap (H1), cluster bootstrap over held-out towers (H2–H3)
 
 - Tower site-months: 15948 from 204 sites; vegetated cells: 160170; τ = 0.449.
 - Outside support: 9.0% of land-months (4.9–18.0%), 13.1% of MetaFlux GPP (7.0–27.1%).
-- By Köppen group (area / GPP): A 17.4% / 20.7%; B 3.1% / 3.8%; C 11.6% / 16.4%; D 2.2% / 2.8%; E 31.2% / 34.0%
+- By Köppen group, share of the group's land-months / of the group's GPP outside support: A 17.4% / 20.7%; B 3.1% / 3.8%; C 11.6% / 16.4%; D 2.2% / 2.8%; E 31.2% / 34.0%
+- Where the out-of-support GPP sits (PgC yr⁻¹, share of all out-of-support GPP): A 10.19 (62%); B 0.63 (4%); C 4.10 (25%); D 0.94 (6%); E 0.60 (4%); total 16.46.
+- Median inputs of out-of-support tropical (A) land-months: P_ERA 8.3, LAI 3.3, VPD_ERA 4.4, TA_ERA 24.9, SW_IN_ERA 202.5 (tower 1st–99th percentile: P_ERA 0.0–10.4, LAI 0.0–6.0, VPD_ERA 0.2–26.3, TA_ERA -22.0–29.0, SW_IN_ERA 1.1–337.6).
 - Robustness (area): τ90 19.5%, τ99 0.9%, log(1+P) 8.0%, Mahalanobis 9.1%, rank 5.3%, LAI realigned 8.6%.
 - Domain classifier towers vs pixels: AUC 0.91.
 
@@ -57,7 +59,10 @@ Near-identical inputs at different towers differing by > 2 gC m⁻² d⁻¹: 31%
 | | L50 | L90 | no smoothness |
 |---|---|---|---|
 | A1 exact | 123.1–135.3 (±4.9%) | 113.2–151.8 (±15.4%) | 109.3–184.3 (±29.8%) |
-| A1 ± δ (δ = 2.64) | ±75% | ±84% | ±94% |
+| A1 ± δ, δ = in-support CV RMSE 2.64 (pre-registered; upper envelope) | ±75% | ±84% | ±94% |
+| A1 ± δ, δ = systematic site-level part 1.40 (D5) | ±44% | ±53% | ±65% |
+
+In-support held-out error decomposition (D5): systematic site-level RMS 1.40 over 191 sites; within-site scatter 2.32; mean residual across towers -0.023 gC m⁻² d⁻¹.
 
 ## Network design
 
